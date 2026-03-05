@@ -1,0 +1,12 @@
+port: 7880
+rtc:
+  udp_port: 7881
+  tcp_port: 7881
+  # BELANGRIJK: Vervang met jouw VPS publieke IP adres
+  # Dit zorgt ervoor dat clients de juiste IP krijgen voor WebRTC verbindingen
+  node_ip: 0.0.0.0  # Vervang met bijv: 1.2.3.4
+
+keys:
+  # BELANGRIJK: Wijzig deze keys voor productie!
+  # Genereer nieuwe: openssl rand -hex 16
+  pumbaa: "HAKUNA_MATATA_TIMON_PUMBAA"

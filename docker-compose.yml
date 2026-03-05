@@ -1,0 +1,49 @@
+services:
+  # LiveKit media server
+  livekit:
+    image: livekit/livekit-server:latest
+    container_name: livekit-server
+    command: --config /etc/livekit.yaml --bind 0.0.0.0
+    volumes:
+      - ./livekit.yaml:/etc/livekit.yaml
+    ports:
+      - "7880:7880"      # HTTP/WebSocket
+      - "7881:7881/udp"  # WebRTC UDP
+      - "7881:7881/tcp"  # WebRTC TCP
+    restart: unless-stopped
+    networks:
+      - livekit-network
+
+  token-server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: livekit-token-server
+    environment:
+      - NODE_ENV=production
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-pumbaa}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-HAKUNA_MATATA_TIMON_PUMBAA}
+      - FRONTEND_ORIGINS=${FRONTEND_ORIGINS:-}
+    depends_on:
+      - livekit
+    restart: unless-stopped
+    networks:
+      - livekit-network
+
+  # Client (static frontend)
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: livekit-client
+    ports:
+      - "5173:80"    # Client (HTTP)
+    depends_on:
+      - token-server
+    restart: unless-stopped
+    networks:
+      - livekit-network
+
+networks:
+  livekit-network:
+    driver: bridge

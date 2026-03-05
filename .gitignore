@@ -1,0 +1,22 @@
+# Docker volumes en data
+*.log
+logs/
+
+# Environment files
+.env
+.env.docker
+.env.local
+
+# Runtime config with secrets
+livekit.yaml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
