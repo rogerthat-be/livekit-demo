@@ -35,6 +35,9 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
+      args:
+        VITE_TOKEN_URL: ${VITE_TOKEN_URL:-/token}
+        VITE_LIVEKIT_URL: ${VITE_LIVEKIT_URL:-ws://localhost:7880}
     container_name: livekit-client
     ports:
       - "5173:80"    # Client (HTTP)

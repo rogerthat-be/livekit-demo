@@ -50,7 +50,11 @@ Voorbeeld:
 LIVEKIT_API_KEY=...
 LIVEKIT_API_SECRET=...
 FRONTEND_ORIGINS=https://stream.jouwdomein.com,https://jouwnaam.github.io
+VITE_TOKEN_URL=https://api.jouwdomein.com/token
+VITE_LIVEKIT_URL=wss://livekit.jouwdomein.com
 ```
+
+Let op: deze `VITE_*` waarden worden tijdens `docker compose build` in de client gebakken.
 
 3) Configureer client URLs:
 
