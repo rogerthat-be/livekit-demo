@@ -13,6 +13,7 @@ services:
     restart: unless-stopped
     networks:
       - livekit-network
+      - rt-proxy-network
 
   token-server:
     build:
@@ -29,6 +30,7 @@ services:
     restart: unless-stopped
     networks:
       - livekit-network
+      - rt-proxy-network
 
   # Client (static frontend)
   client:
@@ -46,7 +48,10 @@ services:
     restart: unless-stopped
     networks:
       - livekit-network
+      - rt-proxy-network
 
 networks:
   livekit-network:
     driver: bridge
+  rt-proxy-network:
+    external: true
