@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Watch</title></head>
+  <body>
+    <h1>Watch (kijken)</h1>
+
+    <label>Room: <input id="room" value="demo" /></label>
+    <button id="join">Join</button>
+    <button id="leave" disabled>Leave</button>
+
+    <div id="status" style="margin: 10px 0; padding: 10px; background: #f0f0f0; border-radius: 5px; font-family: monospace; font-size: 12px;"></div>
+
+    <h3>Remote stream</h3>
+    <video id="remote" autoplay playsinline style="width: 720px; border: 1px solid #ccc;"></video>
+
+    <script type="module" src="/src/watch.js"></script>
+  </body>
+</html>

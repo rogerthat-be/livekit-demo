@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Host</title></head>
+  <body>
+    <h1>Host (zendt camera)</h1>
+
+    <label>Room: <input id="room" value="demo" /></label>
+    <button id="start">Start stream</button>
+    <button id="stop" disabled>Stop</button>
+
+    <h3>Local preview</h3>
+    <video id="local" autoplay playsinline muted style="width: 480px; border: 1px solid #ccc;"></video>
+
+    <script type="module" src="/src/host.js"></script>
+  </body>
+</html>
