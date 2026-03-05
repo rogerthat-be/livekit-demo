@@ -5,20 +5,25 @@ import { AccessToken } from 'livekit-server-sdk'
 
 const app = express()
 
-const allowedOrigins = (process.env.FRONTEND_ORIGINS || '')
-  .split(',')
-  .map((origin) => origin.trim())
-  .filter(Boolean)
 
+// temporary CORS setup - in production, configure allowed origins via .env
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
-      return callback(null, true)
-    }
-
-    return callback(new Error('Not allowed by CORS'))
-  },
+  origin: '*',
 }))
+// const allowedOrigins = (process.env.FRONTEND_ORIGINS || '')
+//   .split(',')
+//   .map((origin) => origin.trim())
+//   .filter(Boolean)
+
+// app.use(cors({
+//   origin: (origin, callback) => {
+//     if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+//       return callback(null, true)
+//     }
+
+//     return callback(new Error('Not allowed by CORS'))
+//   },
+// }))
 
 app.get('/token', async (req, res) => {
   const room = req.query.room || 'demo'
