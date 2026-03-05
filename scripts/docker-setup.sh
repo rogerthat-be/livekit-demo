@@ -22,10 +22,10 @@ if ! docker ps >/dev/null 2>&1; then
     exit 1
 fi
 
-# Check of docker-compose beschikbaar is
-if ! command -v docker-compose &> /dev/null; then
-    echo -e "${RED}❌ Error: docker-compose not found${NC}"
-    echo "Install with: sudo apt install docker-compose"
+# Check of docker compose beschikbaar is
+if ! docker compose version >/dev/null 2>&1; then
+    echo -e "${RED}❌ Error: docker compose not available${NC}"
+    echo "Install Docker Compose v2 plugin"
     exit 1
 fi
 
@@ -134,11 +134,11 @@ echo -e "${BLUE}🚀 Next Steps:${NC}"
 echo ""
 echo "1. Open firewall ports (if needed)"
 echo "2. Start services:"
-echo "   ${GREEN}docker-compose up -d --build${NC}"
+echo "   ${GREEN}docker compose up -d --build${NC}"
 echo ""
 echo "3. Check status:"
-echo "   ${GREEN}docker-compose ps${NC}"
-echo "   ${GREEN}docker-compose logs -f${NC}"
+echo "   ${GREEN}docker compose ps${NC}"
+echo "   ${GREEN}docker compose logs -f${NC}"
 echo ""
 
 if [[ $USE_DOMAINS =~ ^[Yy]$ ]]; then
@@ -162,15 +162,15 @@ read -p "Start services now? (y/n): " START_NOW
 if [[ $START_NOW =~ ^[Yy]$ ]]; then
     echo ""
     echo -e "${BLUE}🚀 Starting services...${NC}"
-    docker-compose up -d --build
+    docker compose up -d --build
     
     echo ""
     echo -e "${GREEN}✅ Services started!${NC}"
     echo ""
-    echo "View logs with: docker-compose logs -f"
+    echo "View logs with: docker compose logs -f"
 else
     echo ""
-    echo "Start manually with: docker-compose up -d --build"
+    echo "Start manually with: docker compose up -d --build"
 fi
 
 echo ""
