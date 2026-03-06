@@ -4,6 +4,16 @@ const stunUrl = import.meta.env.VITE_STUN_URL
 const turnUrl = import.meta.env.VITE_TURN_URL
 const turnUsername = import.meta.env.VITE_TURN_USERNAME
 const turnPassword = import.meta.env.VITE_TURN_PASSWORD
+const iceTransportPolicy = import.meta.env.VITE_ICE_TRANSPORT_POLICY || 'all'
+
+function parseUrls(value) {
+  if (!value) return []
+
+  return value
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean)
+}
 
 export async function fetchToken({ roomName, role, identity }) {
   const params = new URLSearchParams({
@@ -34,10 +44,11 @@ export function getIceEnvDebug() {
   return {
     wsUrl,
     tokenUrl,
-    stunUrl: stunUrl || '(not set)',
-    turnUrl: turnUrl || '(not set)',
+    stunUrls: parseUrls(stunUrl),
+    turnUrls: parseUrls(turnUrl),
     turnUsername: turnUsername || '(not set)',
     turnPasswordConfigured: Boolean(turnPassword),
+    iceTransportPolicy,
   }
 }
 
@@ -47,14 +58,16 @@ export function logIceEnvDebug(context = 'client') {
 
 export function createRoomOptions() {
   const iceServers = []
+  const stunUrls = parseUrls(stunUrl)
+  const turnUrls = parseUrls(turnUrl)
 
-  if (stunUrl) {
-    iceServers.push({ urls: [stunUrl] })
+  if (stunUrls.length > 0) {
+    iceServers.push({ urls: stunUrls })
   }
 
-  if (turnUrl && turnUsername && turnPassword) {
+  if (turnUrls.length > 0 && turnUsername && turnPassword) {
     iceServers.push({
-      urls: [turnUrl],
+      urls: turnUrls,
       username: turnUsername,
       credential: turnPassword,
     })
@@ -64,6 +77,7 @@ export function createRoomOptions() {
     ? {
         rtcConfig: {
           iceServers,
+          iceTransportPolicy,
         },
       }
     : {}
