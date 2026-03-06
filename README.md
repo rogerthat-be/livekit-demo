@@ -2,6 +2,12 @@
 
 Docker setup voor LiveKit + token server, met optionele losse client hosting (bv. GitHub Pages).
 
+## Uitgebreide randinfo
+
+Voor achtergrond en terminologie van de hele stack (WebRTC, TURN, LiveKit, Docker, Compose, VPS/Hostinger, NPM, troubleshooting), zie:
+
+- `docs/RANDINFO-LIVEKIT-STACK.md`
+
 ## Vereisten
 
 - Docker + Docker Compose
