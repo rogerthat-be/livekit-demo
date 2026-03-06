@@ -4,6 +4,7 @@ import {
   fetchToken,
   createViewerIdentity,
   createRoomOptions,
+  getIceEnvDebug,
   logIceEnvDebug,
   logRoomOptionsDebug,
 } from './lib/livekit.js'
@@ -22,6 +23,7 @@ const remoteVideo = document.getElementById('remote')
 const statusDiv = document.getElementById('status')
 
 let room
+const debugMarker = 'watch-debug-v2'
 
 function log(msg) {
   console.log(msg)
@@ -32,6 +34,12 @@ function log(msg) {
 }
 
 log(`LiveKit URL: ${wsUrl}`)
+log(`Debug marker: ${debugMarker}`)
+const startupIceEnv = getIceEnvDebug()
+log(`ICE STUN: ${startupIceEnv.stunUrl}`)
+log(`ICE TURN: ${startupIceEnv.turnUrl}`)
+log(`TURN user: ${startupIceEnv.turnUsername}`)
+log(`TURN password configured: ${startupIceEnv.turnPasswordConfigured}`)
 
 btnJoin.onclick = async () => {
   const roomName = elRoom.value.trim() || 'demo'
@@ -43,6 +51,11 @@ btnJoin.onclick = async () => {
     log('LiveKit URL: ' + wsUrl)
     logIceEnvDebug('watch-connect')
     logRoomOptionsDebug('watch-connect')
+    const connectIceEnv = getIceEnvDebug()
+    log(`CONNECT ICE STUN: ${connectIceEnv.stunUrl}`)
+    log(`CONNECT ICE TURN: ${connectIceEnv.turnUrl}`)
+    log(`CONNECT TURN user: ${connectIceEnv.turnUsername}`)
+    log(`CONNECT TURN password configured: ${connectIceEnv.turnPasswordConfigured}`)
     
     room = new Room(createRoomOptions())
     log('Getting token for room: ' + roomName)
