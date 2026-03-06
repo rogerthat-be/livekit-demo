@@ -54,7 +54,7 @@ FRONTEND_ORIGINS=https://stream.jouwdomein.com,https://jouwnaam.github.io
 VITE_TOKEN_URL=https://api.jouwdomein.com/token
 VITE_LIVEKIT_URL=wss://livekit.jouwdomein.com
 VITE_STUN_URL=stun:turn.jouwdomein.com:3478
-VITE_TURN_URL=turn:turn.jouwdomein.com:3478?transport=udp
+VITE_TURN_URL=turn:turn.jouwdomein.com:3478?transport=udp,turn:turn.jouwdomein.com:3478?transport=tcp
 VITE_TURN_USERNAME=turnuser
 VITE_TURN_PASSWORD=vervang-met-sterk-wachtwoord
 
@@ -96,16 +96,39 @@ docker compose up -d --build livekit coturn token-server
 
 Optioneel: start ook `client` container als je client niet extern host.
 
+## Client via Docker hosten
+
+Als je `host.html` / `watch.html` via de `client` container serveert:
+
+1. Zet alle client variabelen in root `.env` (`VITE_TOKEN_URL`, `VITE_LIVEKIT_URL`, `VITE_STUN_URL`, `VITE_TURN_*`).
+2. Build en start de client container opnieuw:
+
+```bash
+docker compose up -d --build --force-recreate client
+```
+
+3. Open de client op `http://<server-ip>:5173`.
+
+Belangrijk:
+- `client/.env` wordt gebruikt voor losse/externe client builds.
+- Voor Docker-client is root `.env` leidend (via build args in `docker-compose.yml`).
+- Na elke wijziging in `VITE_*` moet je opnieuw `--build` doen.
+
 ## Nginx Proxy Manager (domein setup)
 
-Maak 2 Proxy Hosts op je VPS:
+Maak 3 Proxy Hosts op je VPS (als je client ook via Docker draait):
 
-1. Token API
+1. Client UI
+- Domain: `portal.jouwdomein.com`
+- Forward: `livekit-client:80`
+- SSL: aan
+
+2. Token API
 - Domain: `api.jouwdomein.com`
 - Forward: `livekit-token-server:3001`
 - SSL: aan
 
-2. LiveKit websocket
+3. LiveKit websocket
 - Domain: `livekit.jouwdomein.com`
 - Forward: `livekit-server:7880`
 - WebSocket support: aan
@@ -124,6 +147,7 @@ proxy_send_timeout 3600s;
 ## Belangrijke noot
 
 UDP `7881` kan niet via Nginx Proxy Manager en moet direct open staan in firewall.
+TURN/Coturn (`3478/tcp+udp` en `49160-49200/udp`) gaat ook niet via Nginx Proxy Manager en moet direct open staan.
 
 ## Coturn (TURN fallback)
 
