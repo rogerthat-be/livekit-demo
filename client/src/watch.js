@@ -20,10 +20,12 @@ const elRoom = document.getElementById('room')
 const btnJoin = document.getElementById('join')
 const btnLeave = document.getElementById('leave')
 const remoteVideo = document.getElementById('remote')
+const remoteAudioContainer = document.getElementById('remote-audio')
 const statusDiv = document.getElementById('status')
 
 let room
 const debugMarker = 'watch-debug-v2'
+const audioElementsByTrackSid = new Map()
 
 function log(msg) {
   console.log(msg)
@@ -71,6 +73,13 @@ btnJoin.onclick = async () => {
       if (track.kind === 'video') {
         track.attach(remoteVideo)
       }
+
+      if (track.kind === 'audio') {
+        const audioElement = track.attach()
+        audioElement.autoplay = true
+        remoteAudioContainer?.appendChild(audioElement)
+        audioElementsByTrackSid.set(track.sid, audioElement)
+      }
     })
 
     room.on('trackUnsubscribed', (track) => {
@@ -78,6 +87,15 @@ btnJoin.onclick = async () => {
       if (track.kind === 'video') {
         track.detach(remoteVideo)
         remoteVideo.srcObject = null
+      }
+
+      if (track.kind === 'audio') {
+        const audioElement = audioElementsByTrackSid.get(track.sid)
+        if (audioElement) {
+          track.detach(audioElement)
+          audioElement.remove()
+          audioElementsByTrackSid.delete(track.sid)
+        }
       }
     })
 
@@ -98,5 +116,9 @@ btnLeave.onclick = async () => {
   if (room) await room.disconnect()
   room = null
   remoteVideo.srcObject = null
+  for (const [trackSid, audioElement] of audioElementsByTrackSid.entries()) {
+    audioElement.remove()
+    audioElementsByTrackSid.delete(trackSid)
+  }
   btnJoin.disabled = false
 }
