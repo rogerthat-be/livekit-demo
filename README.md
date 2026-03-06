@@ -6,7 +6,7 @@ Docker setup voor LiveKit + token server, met optionele losse client hosting (bv
 
 - Docker + Docker Compose
 - VPS + domeinen (aanbevolen)
-- Open poorten: `7880/tcp`, `7881/udp`
+- Open poorten: `7880/tcp`, `7881/udp`, `3478/tcp+udp`, `49160-49200/udp`
 
 ## Installatie vanaf git clone
 
@@ -52,6 +52,16 @@ LIVEKIT_API_SECRET=...
 FRONTEND_ORIGINS=https://stream.jouwdomein.com,https://jouwnaam.github.io
 VITE_TOKEN_URL=https://api.jouwdomein.com/token
 VITE_LIVEKIT_URL=wss://livekit.jouwdomein.com
+VITE_STUN_URL=stun:turn.jouwdomein.com:3478
+VITE_TURN_URL=turn:turn.jouwdomein.com:3478?transport=udp
+VITE_TURN_USERNAME=turnuser
+VITE_TURN_PASSWORD=vervang-met-sterk-wachtwoord
+
+TURN_REALM=turn.jouwdomein.com
+TURN_USERNAME=turnuser
+TURN_PASSWORD=vervang-met-sterk-wachtwoord
+TURN_MIN_PORT=49160
+TURN_MAX_PORT=49200
 ```
 
 Let op: deze `VITE_*` waarden worden tijdens `docker compose build` in de client gebakken.
@@ -80,7 +90,7 @@ VITE_LIVEKIT_URL=ws://JOUW_VPS_IP:7880
 4) Start backend services:
 
 ```bash
-docker compose up -d --build livekit token-server
+docker compose up -d --build livekit coturn token-server
 ```
 
 Optioneel: start ook `client` container als je client niet extern host.
@@ -114,6 +124,15 @@ proxy_send_timeout 3600s;
 
 UDP `7881` kan niet via Nginx Proxy Manager en moet direct open staan in firewall.
 
+## Coturn (TURN fallback)
+
+Voor netwerken waar UDP of directe P2P/relay connectiviteit beperkt is, draait deze stack ook een `coturn` service.
+
+- Browser clients gebruiken `VITE_STUN_URL` en `VITE_TURN_*` als ICE servers.
+- Zet `TURN_REALM`, `TURN_USERNAME`, `TURN_PASSWORD` in `.env`.
+- Open firewall voor `3478/tcp`, `3478/udp`, en relay-range `49160-49200/udp`.
+- Gebruik in productie sterke TURN credentials.
+
 ## Commando's
 
 ```bash
@@ -121,6 +140,7 @@ docker compose ps
 docker compose logs -f
 docker compose restart token-server
 docker compose restart livekit
+docker compose restart coturn
 docker compose down
 ```
 

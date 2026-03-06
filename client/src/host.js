@@ -1,5 +1,5 @@
 import { Room, createLocalTracks } from 'livekit-client'
-import { wsUrl, fetchToken } from './lib/livekit.js'
+import { wsUrl, fetchToken, createRoomOptions } from './lib/livekit.js'
 
 console.log('LiveKit wsUrl loaded:', wsUrl)
 if (!wsUrl) {
@@ -21,7 +21,7 @@ btnStart.onclick = async () => {
     console.log('Starting stream...')
     console.log('LiveKit URL:', wsUrl)
     
-    room = new Room()
+    room = new Room(createRoomOptions())
     console.log('Getting token for room:', roomName)
     const token = await fetchToken({ roomName, role: 'host', identity: 'host' })
     console.log('Token received:', token)

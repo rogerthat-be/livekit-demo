@@ -15,6 +15,28 @@ services:
       - livekit-network
       - rt-proxy-network
 
+  coturn:
+    image: coturn/coturn:latest
+    container_name: coturn-server
+    command:
+      - -n
+      - --lt-cred-mech
+      - --fingerprint
+      - --no-multicast-peers
+      - --no-cli
+      - --realm=${TURN_REALM:-localhost}
+      - --user=${TURN_USERNAME:-turnuser}:${TURN_PASSWORD:-turnpass}
+      - --min-port=${TURN_MIN_PORT:-49160}
+      - --max-port=${TURN_MAX_PORT:-49200}
+    ports:
+      - "3478:3478/udp"
+      - "3478:3478/tcp"
+      - "${TURN_MIN_PORT:-49160}-${TURN_MAX_PORT:-49200}:${TURN_MIN_PORT:-49160}-${TURN_MAX_PORT:-49200}/udp"
+    restart: unless-stopped
+    networks:
+      - livekit-network
+      - rt-proxy-network
+
   token-server:
     build:
       context: ./server
@@ -40,6 +62,10 @@ services:
       args:
         VITE_TOKEN_URL: ${VITE_TOKEN_URL:-/token}
         VITE_LIVEKIT_URL: ${VITE_LIVEKIT_URL:-ws://localhost:7880}
+        VITE_STUN_URL: ${VITE_STUN_URL:-}
+        VITE_TURN_URL: ${VITE_TURN_URL:-}
+        VITE_TURN_USERNAME: ${VITE_TURN_USERNAME:-}
+        VITE_TURN_PASSWORD: ${VITE_TURN_PASSWORD:-}
     container_name: livekit-client
     ports:
       - "5173:80"    # Client (HTTP)

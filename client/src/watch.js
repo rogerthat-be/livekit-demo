@@ -1,5 +1,5 @@
 import { Room } from 'livekit-client'
-import { wsUrl, fetchToken, createViewerIdentity } from './lib/livekit.js'
+import { wsUrl, fetchToken, createViewerIdentity, createRoomOptions } from './lib/livekit.js'
 
 console.log('LiveKit wsUrl loaded:', wsUrl)
 if (!wsUrl) {
@@ -33,7 +33,7 @@ btnJoin.onclick = async () => {
     log('Joining room...')
     log('LiveKit URL: ' + wsUrl)
     
-    room = new Room()
+    room = new Room(createRoomOptions())
     log('Getting token for room: ' + roomName)
     const token = await fetchToken({
       roomName,

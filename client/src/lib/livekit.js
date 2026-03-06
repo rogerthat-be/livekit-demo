@@ -1,5 +1,9 @@
 export const wsUrl = import.meta.env.VITE_LIVEKIT_URL
 export const tokenUrl = import.meta.env.VITE_TOKEN_URL || '/token'
+const stunUrl = import.meta.env.VITE_STUN_URL
+const turnUrl = import.meta.env.VITE_TURN_URL
+const turnUsername = import.meta.env.VITE_TURN_USERNAME
+const turnPassword = import.meta.env.VITE_TURN_PASSWORD
 
 export async function fetchToken({ roomName, role, identity }) {
   const params = new URLSearchParams({
@@ -24,4 +28,28 @@ export async function fetchToken({ roomName, role, identity }) {
 
 export function createViewerIdentity() {
   return `viewer-${Math.random().toString(16).slice(2)}`
+}
+
+export function createRoomOptions() {
+  const iceServers = []
+
+  if (stunUrl) {
+    iceServers.push({ urls: [stunUrl] })
+  }
+
+  if (turnUrl && turnUsername && turnPassword) {
+    iceServers.push({
+      urls: [turnUrl],
+      username: turnUsername,
+      credential: turnPassword,
+    })
+  }
+
+  return iceServers.length > 0
+    ? {
+        rtcConfig: {
+          iceServers,
+        },
+      }
+    : {}
 }
