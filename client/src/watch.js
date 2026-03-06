@@ -1,10 +1,19 @@
 import { Room } from 'livekit-client'
-import { wsUrl, fetchToken, createViewerIdentity, createRoomOptions } from './lib/livekit.js'
+import {
+  wsUrl,
+  fetchToken,
+  createViewerIdentity,
+  createRoomOptions,
+  logIceEnvDebug,
+  logRoomOptionsDebug,
+} from './lib/livekit.js'
 
 console.log('LiveKit wsUrl loaded:', wsUrl)
 if (!wsUrl) {
   console.error('VITE_LIVEKIT_URL is not set! Check your .env file.')
 }
+logIceEnvDebug('watch')
+logRoomOptionsDebug('watch')
 
 const elRoom = document.getElementById('room')
 const btnJoin = document.getElementById('join')
@@ -32,6 +41,8 @@ btnJoin.onclick = async () => {
   try {
     log('Joining room...')
     log('LiveKit URL: ' + wsUrl)
+    logIceEnvDebug('watch-connect')
+    logRoomOptionsDebug('watch-connect')
     
     room = new Room(createRoomOptions())
     log('Getting token for room: ' + roomName)

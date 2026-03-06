@@ -92,7 +92,7 @@ port: 7880
 rtc:
   udp_port: 7881
   tcp_port: 7881
-  node_ip: $VPS_IP
+    use_external_ip: true
 
 keys:
   $API_KEY: "$API_SECRET"

@@ -22,7 +22,7 @@ cd livekit
 ```
 
 Dit script configureert:
-- `livekit.yaml` met `node_ip`
+- `livekit.yaml` met `use_external_ip: true`
 - `.env` met API key/secret
 - `client/.env` met `VITE_TOKEN_URL` en `VITE_LIVEKIT_URL`
 
@@ -36,6 +36,7 @@ nano livekit.yaml
 ```
 
 Zet `node_ip` op je publieke VPS IP.
+Gebruik in productie `use_external_ip: true` (standaard in deze template).
 
 2) Configureer secrets + CORS voor docker compose:
 

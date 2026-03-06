@@ -30,6 +30,21 @@ export function createViewerIdentity() {
   return `viewer-${Math.random().toString(16).slice(2)}`
 }
 
+export function getIceEnvDebug() {
+  return {
+    wsUrl,
+    tokenUrl,
+    stunUrl: stunUrl || '(not set)',
+    turnUrl: turnUrl || '(not set)',
+    turnUsername: turnUsername || '(not set)',
+    turnPasswordConfigured: Boolean(turnPassword),
+  }
+}
+
+export function logIceEnvDebug(context = 'client') {
+  console.log(`[LiveKit][${context}] ICE env debug`, getIceEnvDebug())
+}
+
 export function createRoomOptions() {
   const iceServers = []
 
@@ -52,4 +67,19 @@ export function createRoomOptions() {
         },
       }
     : {}
+}
+
+export function logRoomOptionsDebug(context = 'client') {
+  const roomOptions = createRoomOptions()
+  const iceServers = roomOptions.rtcConfig?.iceServers || []
+
+  console.log(`[LiveKit][${context}] Room options`, {
+    hasRtcConfig: Boolean(roomOptions.rtcConfig),
+    iceServersCount: iceServers.length,
+    iceServers: iceServers.map((server) => ({
+      urls: server.urls,
+      hasUsername: Boolean(server.username),
+      hasCredential: Boolean(server.credential),
+    })),
+  })
 }
